@@ -229,7 +229,7 @@ function sendMail(status) {
 
      const emailParams = {
         name: appointment.name,
-        email: appointment.email,
+        to_email: appointment.email,
         appt_date: appointment.date,
         appt_time: appointment.time,
         consultation_mode: appointment.interest,
@@ -238,7 +238,7 @@ function sendMail(status) {
         custom_message: getCustomMessage(status)
     };
 
-    emailjs.send("service_in6m9bc", "template_8agnim8", emailParams)
+    emailjs.send("service_in6m9bc", "template_v7i3hfx", emailParams)
         .then((response) => {
             console.log(`✅ ${status.toUpperCase()} email sent successfully!`, response.status);
             alert(`${status.toUpperCase()} email sent to ${appointment.email}`);

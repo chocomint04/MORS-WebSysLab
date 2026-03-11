@@ -58,55 +58,146 @@ window.addEventListener('load', function() {
         return { hours, minutes };
     }
 
-    // Function to load and add events
-    function loadAndAddEvents(calendar) {
-        database.ref('contactFormDB').once('value', (snapshot) => {
-            const consultations = snapshot.val();
-            if (consultations) {
-                calendar.removeAllEvents();
-                for (const consultationId in consultations) {
-                    const consultation = consultations[consultationId];
-                    // Only show approved or rescheduled appointments
-                    const status = consultation.status ? consultation.status.toLowerCase() : "";
-                    if (status !== "approved" && status !== "rescheduled") {
-                        continue;
+    function buildLocalDateTime(dateKey, timeStr) {
+        if (!dateKey || !timeStr) return null;
+        const { hours, minutes } = parseTimeTo24Hour(timeStr);
+        const hh = String(hours).padStart(2, '0');
+        const mm = String(minutes).padStart(2, '0');
+        return `${dateKey}T${hh}:${mm}:00`;
+    }
+
+    function normalizeDateKey(dateValue) {
+        if (!dateValue) return null;
+        const raw = String(dateValue).trim();
+
+        // Direct YYYY-MM-DD
+        if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+
+        // ISO-like timestamps: YYYY-MM-DDTHH:mm:ss...
+        const isoMatch = raw.match(/^(\d{4}-\d{2}-\d{2})T/);
+        if (isoMatch) return isoMatch[1];
+
+        // YYYY/MM/DD
+        const ymdSlash = raw.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+        if (ymdSlash) {
+            const yyyy = ymdSlash[1];
+            const mm = String(Number(ymdSlash[2])).padStart(2, '0');
+            const dd = String(Number(ymdSlash[3])).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        // DD/MM/YYYY or MM/DD/YYYY
+        const dmyOrMdy = raw.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);
+        if (dmyOrMdy) {
+            const first = Number(dmyOrMdy[1]);
+            const second = Number(dmyOrMdy[2]);
+            const yyyy = dmyOrMdy[3];
+            let mm = first;
+            let dd = second;
+
+            // If one side is > 12, infer day/month order.
+            if (first > 12 && second <= 12) {
+                dd = first;
+                mm = second;
+            } else if (second > 12 && first <= 12) {
+                mm = first;
+                dd = second;
+            }
+
+            if (mm >= 1 && mm <= 12 && dd >= 1 && dd <= 31) {
+                return `${yyyy}-${String(mm).padStart(2, '0')}-${String(dd).padStart(2, '0')}`;
+            }
+        }
+
+        const d = new Date(raw);
+        if (Number.isNaN(d.getTime())) return null;
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    }
+
+    // Function to load and add events from the current Firebase snapshot
+    function loadAndAddEvents(calendar, consultations) {
+        appointmentCounts = {};
+        calendar.removeAllEvents();
+
+        if (consultations) {
+            for (const consultationId in consultations) {
+                const consultation = consultations[consultationId];
+                const status = consultation.status ? consultation.status.toLowerCase() : "";
+
+                // Only show approved or rescheduled appointments
+                if (status !== "approved" && status !== "rescheduled") {
+                    continue;
+                }
+
+                const dateKey = normalizeDateKey(consultation.appointmentDate);
+                if (dateKey) {
+                    appointmentCounts[dateKey] = (appointmentCounts[dateKey] || 0) + 1;
+                }
+
+                const startDateTime = buildLocalDateTime(dateKey, consultation.appointmentTime) || dateKey;
+
+                let endDateTime = null;
+                if (consultation.appointmentTime) {
+                    const { hours, minutes } = parseTimeTo24Hour(consultation.appointmentTime);
+                    const endHours = String(hours + 1).padStart(2, '0');
+                    const endMinutes = String(minutes).padStart(2, '0');
+                    endDateTime = `${dateKey}T${endHours}:${endMinutes}:00`;
+                }
+
+                const title = `${consultation.firstName} ${consultation.lastName}`;
+                let eventColor = "#204cdc";
+                if (status === "rescheduled") eventColor = "#F5A623";
+
+                // Pass appointmentData for correct localStorage update
+                calendar.addEvent({
+                    id: consultationId,
+                    title: title,
+                    start: startDateTime,
+                    end: endDateTime,
+                    color: eventColor,
+                    status: status,
+                    appointmentData: {
+                        name: title,
+                        email: consultation.email,
+                        phone: consultation.phoneNumber,
+                        company: consultation.company,
+                        interest: consultation.consultationInterest,
+                        date: consultation.appointmentDate,
+                        time: consultation.appointmentTime,
+                        comments: consultation.additionalInfo || "",
+                        entryId: consultationId,
+                        status: status
                     }
+                });
+            }
+        }
 
-                    let startDateTime = consultation.appointmentDate;
-                    if (consultation.appointmentTime) {
-                        const { hours, minutes } = parseTimeTo24Hour(consultation.appointmentTime);
-                        const dateObj = new Date(consultation.appointmentDate);
-                        dateObj.setHours(hours, minutes, 0, 0);
-                        startDateTime = dateObj.toISOString();
+        requestAnimationFrame(() => updateDayCellBadges());
+        setTimeout(updateDayCellBadges, 150);
+    }
+
+    // Render appointment count badges on each day cell in month view
+    function updateDayCellBadges() {
+        if (calendar.view.type !== 'dayGridMonth') return;
+        document.querySelectorAll('.fc-day-appt-count').forEach(el => el.remove());
+
+        for (const [dateStr, count] of Object.entries(appointmentCounts)) {
+            if (count > 0) {
+                const cell = document.querySelector(`.fc-day[data-date="${dateStr}"]`);
+                if (cell) {
+                    const dayTop = cell.querySelector('.fc-daygrid-day-top');
+                    if (dayTop) {
+                        const badge = document.createElement('span');
+                        badge.className = 'fc-day-appt-count';
+                        badge.textContent = count;
+                        dayTop.appendChild(badge);
                     }
-
-                    const title = `${consultation.firstName} ${consultation.lastName}`;
-                    let eventColor = "#204cdc";
-                    if (status === "rescheduled") eventColor = "#F5A623";
-
-                    // Pass appointmentData for correct localStorage update
-                    calendar.addEvent({
-                        id: consultationId,
-                        title: title,
-                        start: startDateTime,
-                        color: eventColor,
-                        status: status,
-                        appointmentData: {
-                            name: title,
-                            email: consultation.email,
-                            phone: consultation.phoneNumber,
-                            company: consultation.company,
-                            interest: consultation.consultationInterest,
-                            date: consultation.appointmentDate,
-                            time: consultation.appointmentTime,
-                            comments: consultation.additionalInfo || "",
-                            entryId: consultationId,
-                            status: status
-                        }
-                    });
                 }
             }
-        });
+        }
     }
 
     // Set custom event rendering for week/day views
@@ -185,6 +276,7 @@ window.addEventListener('load', function() {
     // Track selected date for CSS highlight and logic
     let selectedDateStr = null;
     let selectedCell = null;
+    let appointmentCounts = {};
 
     // Helper to update left panel for a given date and highlight calendar cell
     function updateLeftPanelForDate(dateStr, skipHighlight = false) {
@@ -335,6 +427,7 @@ window.addEventListener('load', function() {
                 selectedCell = null;
             }
         }
+        setTimeout(updateDayCellBadges, 50);
     });
 
     // Modified to accept a date filter
@@ -348,9 +441,16 @@ window.addEventListener('load', function() {
         if (!filterDate) {
             const currentDate = new Date();
             currentDate.setHours(0, 0, 0, 0);
-            filterDate = currentDate.toISOString().split('T')[0];
+            const yyyy = currentDate.getFullYear();
+            const mm = String(currentDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(currentDate.getDate()).padStart(2, '0');
+            filterDate = `${yyyy}-${mm}-${dd}`;
         }
-        filterDate = new Date(filterDate).toISOString().split('T')[0];
+        filterDate = normalizeDateKey(filterDate);
+        if (!filterDate) {
+            upcomingAppointmentsDiv.innerHTML = '<p>No appointments.</p>';
+            return;
+        }
 
         // Compare selected date to today
         const today = new Date();
@@ -384,9 +484,8 @@ window.addEventListener('load', function() {
                         continue;
                     }
                     // Normalize date for comparison
-                    let apptDate = consultation.appointmentDate;
+                    const apptDate = normalizeDateKey(consultation.appointmentDate);
                     if (apptDate) {
-                        apptDate = new Date(apptDate).toISOString().split('T')[0];
                         if (apptDate === filterDate) {
                             upcoming.push({
                                 time: consultation.appointmentTime,
@@ -460,7 +559,10 @@ window.addEventListener('load', function() {
         const month = monthNames[dateObj.getMonth()];
         document.getElementById('dayDisplay').textContent = String(day).padStart(2, '0');
         document.getElementById('monthDisplay').textContent = month;
-        const dateStr = dateObj.toISOString().split('T')[0];
+        const yyyy = dateObj.getFullYear();
+        const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const dd = String(dateObj.getDate()).padStart(2, '0');
+        const dateStr = `${yyyy}-${mm}-${dd}`;
         displayUpcomingAppointments(dateStr);
 
         if (selectedCell) {
@@ -483,6 +585,7 @@ window.addEventListener('load', function() {
             selectedCell.classList.remove('fc-day-selected');
             selectedCell = null;
         }
+        setTimeout(updateDayCellBadges, 50);
     });
 
     updateDateDisplay();
@@ -491,8 +594,8 @@ window.addEventListener('load', function() {
 
     // Realtime updates for when data changes in Firebase
     database.ref('contactFormDB').on('value', (snapshot) => {
-        calendar.removeAllEvents(); // Clear before loading
-        loadAndAddEvents(calendar);
+        const consultations = snapshot.val();
+        loadAndAddEvents(calendar, consultations);
         // Wait for events to be rendered, then update left panel
         setTimeout(() => {
             // Use selectedDateStr if set, otherwise today
@@ -519,23 +622,19 @@ window.addEventListener('load', function() {
         }
     });
 
-    // Restore calendar state on load
+    // Always show today's appointments on initial load
     document.addEventListener('DOMContentLoaded', function() {
-        // Try to restore state, if not present, show today
-        if (!restoreCalendarState()) {
-            updateDateDisplay();
-        }
-        // Wait for events to load, then update left panel
+        updateDateDisplay();
+        // Wait for events to load, then refresh left panel for today
         setTimeout(() => {
-            const dateToShow = selectedDateStr || (new Date().toISOString().split('T')[0]);
-            updateDateDisplay(dateToShow);
+            updateDateDisplay();
         }, 200);
     });
 
-    // Also restore state after browser back navigation
+    // Also show today after browser back navigation
     window.addEventListener('pageshow', function(event) {
         if (event.persisted) {
-            restoreCalendarState();
+            updateDateDisplay();
         }
     });
 
@@ -546,8 +645,7 @@ window.addEventListener('load', function() {
     }
 
     setTimeout(() => {
-    updateLeftPanelForDate(selectedDateStr, calendar.view.type !== "dayGridMonth");
-    window.scrollTo(0, state.scrollTop || 0);
+    updateLeftPanelForDate(selectedDateStr || new Date().toISOString().split('T')[0], calendar.view.type !== "dayGridMonth");
     fixCalendar(); 
     }, 200);
 

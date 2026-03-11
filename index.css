@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&display=swap');
+
 /* Default desktop styles */
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Segoe UI', Arial, sans-serif;
+    font-family: 'DM Sans', sans-serif;
     min-height: 100vh;
     position: relative;
 }
@@ -21,57 +23,36 @@ body::before {
 }
 
 .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(55, 48, 245, 0.50);
-    padding: 18px 40px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  background: linear-gradient(135deg, #2820e8 0%, #1e1a9e 100%);
+  padding: 0 32px;
+  height: 72px;
+  box-shadow: 0 2px 16px rgba(30,26,158,0.35);
+  position: sticky; top: 0; z-index: 100;
 }
-
-.logo-container {
-    display: flex;
-    align-items: center;
-}
-
+.logo-container { display: flex; align-items: center; gap: 12px; justify-content: flex-start; }
 .logo {
-    height: 60px;
-    width: auto;
+  height: 44px; width: 44px; border-radius: 8px;
+  object-fit: contain; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
-
-.system-title {
-    flex: 1;
-    text-align: center;
-}
+.system-title { text-align: center; justify-self: center; }
 
 .main-title {
-    font-size: 2.1rem;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: 2px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.05rem; font-weight: 600;
+  color: #fff; letter-spacing: 0.3px; white-space: nowrap;
 }
-
-.subtitle {
-    font-size: 1.1rem;
-    color: #fff;
-    margin-top: 2px;
-    letter-spacing: 1px;
-}
-
+.subtitle { font-size: 0.78rem; color: rgba(255,255,255,0.68); margin-top: 2px; }
 .visit-website-btn {
-    background: #3730F5;
-    color: #fff;
-    padding: 10px 22px;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    text-decoration: none;
-    font-weight: 500;
-    transition: background 0.2s;
+  justify-self: flex-end; margin-left: auto;
+  background: rgba(255,255,255,0.12); color: #fff;
+  padding: 8px 18px; border: 1px solid rgba(255,255,255,0.28);
+  border-radius: 6px; font-size: 0.82rem; font-weight: 500;
+  transition: all 0.18s; white-space: nowrap; text-decoration: none;
 }
-.visit-website-btn:hover {
-    background: #2a23b7;
-}
+.visit-website-btn:hover { background: rgba(255,255,255,0.22); }
 
 .main-content {
     display: flex;
@@ -411,4 +392,43 @@ textarea {
         flex-direction: column;
         gap: 0;
     }
+}
+
+/* ── Small buttons for login forms only ── */
+.form-btn {
+  font-size: 0.875rem !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  transition: all 0.18s;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+  padding: 9px 20px !important;
+  width: auto !important;
+  height: auto !important;
+  line-height: 1.2 !important;
+}
+.form-btn-outline {
+  background: #fff !important;
+  color: #3730F5 !important;
+  border: 2px solid #3730F5 !important;
+}
+.form-btn-outline:hover { background: #f0f0ff !important; }
+.form-btn-filled {
+  background: linear-gradient(135deg, #3730F5 0%, #2a23b7 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 3px 10px rgba(55,48,245,0.25);
+}
+.form-btn-filled:hover { transform: translateY(-1px); }
+.btns {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  margin-top: 20px !important;
+  flex-wrap: nowrap !important;
 }

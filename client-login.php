@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Client Login</title>
     <link rel="icon" type="image/x-icon" href="images/logo.png">
-    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="login.css" />
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="client-auth.js" defer></script>
@@ -39,11 +39,11 @@
                     <small style="margin-top: 6px; color: #666;">Use at least 6 characters.</small>
                 </div>
                 <p id="message"></p>
-                <div class="btns" style="display:flex; align-items:center; justify-content:space-between; gap: 10px; margin-top: 16px;">
-                    <a href="index.php" class="admin-btn" style="text-align:center; text-decoration:none; padding:10px 20px;">Back</a>
-                    <div style="display:flex; gap: 10px;">
-                        <button type="button" class="admin-btn" id="button-client-signup" style="text-align:center; text-decoration:none; padding:12px 20px;">Sign Up</button>
-                        <button type="submit" class="admin-btn login-btn" id="button-client-login" style="color:#fff; text-align:center; text-decoration:none; padding:12px 20px;">Login</button>
+                <div class="btns">
+                    <a href="index.php" class="form-btn form-btn-outline">Back</a>
+                    <div style="display:flex; gap:10px;">
+                        <button type="button" class="form-btn form-btn-outline" id="button-client-signup">Sign Up</button>
+                        <button type="submit" class="form-btn form-btn-filled" id="button-client-login">Login</button>
                     </div>
                 </div>
             </form>

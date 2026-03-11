@@ -3,7 +3,7 @@ const firebaseConfig = {
     authDomain: "css151l-6290e.firebaseapp.com",
     databaseURL: "https://css151l-6290e-default-rtdb.asia-southeast1.firebasedatabase.app/",
     projectId: "css151l-6290e",
-    storageBucket: "css151l-6290e.appspot.com",
+    storageBucket: "css151l-6290e.firebasestorage.app",
     messagingSenderId: "907702008183",
     appId: "1:907702008183:web:9dbb807a3db2e2958bc972"
 };
@@ -68,6 +68,32 @@ document.addEventListener("DOMContentLoaded", async function () {
         updateElement("d-date", data.appointmentDate);
         updateElement("time", data.appointmentTime);
         updateElement("comments", data.additionalInfo || "—");
+
+        // Show attachment if one was uploaded
+        const attachmentRow = document.getElementById("attachment-row");
+        const attachmentLabel = document.getElementById("attachment-label");
+        if (data.attachmentURL && data.attachmentName && attachmentRow) {
+            const isImage = /\.(png|jpg|jpeg|gif|webp|bmp|svg)$/i.test(data.attachmentName);
+            if (isImage) {
+                attachmentRow.innerHTML = `
+                    <a href="${data.attachmentURL}" target="_blank" rel="noopener noreferrer">
+                        <img src="${data.attachmentURL}" alt="${data.attachmentName}"
+                            style="max-width:100%;max-height:300px;border-radius:8px;border:1px solid #e2e8f0;margin-top:4px;cursor:pointer;">
+                    </a>
+                    <div style="font-size:0.75rem;color:#94a3b8;margin-top:4px;">${data.attachmentName}</div>`;
+            } else {
+                attachmentRow.innerHTML = `
+                    <a href="${data.attachmentURL}" target="_blank" rel="noopener noreferrer"
+                        style="color:#3730F5;text-decoration:underline;word-break:break-all;">
+                        &#128206; ${data.attachmentName}
+                    </a>`;
+            }
+            attachmentRow.style.display = "";
+            if (attachmentLabel) attachmentLabel.style.display = "";
+        } else if (attachmentRow) {
+            attachmentRow.style.display = "none";
+            if (attachmentLabel) attachmentLabel.style.display = "none";
+        }
 
         console.log("🔥 Loaded Status from Firebase:", data.status);
 

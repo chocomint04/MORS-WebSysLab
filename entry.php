@@ -81,6 +81,8 @@
                                 <span class="label">Date:</span> <span class="value" id="d-date"></span>
                                 <span class="label">Time:</span> <span class="value" id="time"></span>
                                 <span class="label">Comments:</span> <span class="value" id="comments"></span>
+                                <span class="label" id="attachment-label" style="display:none;">Attachment:</span>
+                                <span class="value" id="attachment-row" style="display:none;"></span>
                             </div>
                 
                             <div class="flex justify-center space-x-4 mt-12">

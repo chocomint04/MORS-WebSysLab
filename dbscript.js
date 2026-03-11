@@ -3,7 +3,7 @@ const firebaseConfig = {
     authDomain: "css151l-6290e.firebaseapp.com",
     databaseURL: "https://css151l-6290e-default-rtdb.asia-southeast1.firebasedatabase.app/",
     projectId: "css151l-6290e",
-    storageBucket: "css151l-6290e.appspot.com",
+    storageBucket: "css151l-6290e.firebasestorage.app",
     messagingSenderId: "907702008183",
     appId: "1:907702008183:web:9dbb807a3db2e2958bc972"
 };
@@ -191,37 +191,44 @@ document.addEventListener('DOMContentLoaded', () => {
 let attachmentName = "";
 
 try {
-
     const fileInput = document.getElementById("attachment");
     const file = fileInput ? fileInput.files[0] : null;
-
     console.log("Selected file:", file);
 
     if (file) {
+        console.log("Storage bucket:", firebase.app().options.storageBucket);
+        const storageRef = storage.ref("consultation_attachments/" + Date.now() + "_" + file.name);
+        const uploadTask = storageRef.put(file);
 
-        const storageRef = storage.ref(
-            "consultation_attachments/" + Date.now() + "_" + file.name
-        );
-
-        const snapshot = await storageRef.put(file);
+        const snapshot = await new Promise((resolve, reject) => {
+            uploadTask.on("state_changed",
+                (snap) => console.log("Upload progress:", Math.round((snap.bytesTransferred / snap.totalBytes) * 100) + "%"),
+                (error) => {
+                    console.error("Upload error code:", error.code);
+                    console.error("Upload error message:", error.message);
+                    reject(error);
+                },
+                () => resolve(uploadTask.snapshot)
+            );
+        });
 
         attachmentURL = await snapshot.ref.getDownloadURL();
         attachmentName = file.name;
-
         console.log("Upload successful:", attachmentURL);
     }
-
 } catch (uploadError) {
-
-    console.error("Attachment upload failed:", uploadError);
-
+    console.error("Attachment upload failed - code:", uploadError.code);
+    console.error("Attachment upload failed - message:", uploadError.message);
+    alert("Attachment upload failed: " + (uploadError.message || uploadError.code) + "Check the console for details.");
 }
 
 formData.attachmentURL = attachmentURL;
 formData.attachmentName = attachmentName;
 delete formData.attachment;
 
-const dbResponse = await contactFormDB.push(formData);
+            const dbResponse = await contactFormDB.push(formData);
+            console.log("Data saved to Firebase with key:", dbResponse.key);
+
             // Store data in sessionStorage before redirecting
             sessionStorage.setItem('consultationData', JSON.stringify(formData));
             window.location.href = './receipt.php';

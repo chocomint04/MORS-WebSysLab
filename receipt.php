@@ -75,6 +75,18 @@
                         `;
                     }
                 });
+
+                // Show attachment as a clickable link if present
+                if (data.attachmentURL && data.attachmentName) {
+                    content.innerHTML += `
+                        <div class="receipt-row">
+                            <div class="receipt-label">Attached Document:</div>
+                            <div class="receipt-value">
+                                <a href="${data.attachmentURL}" target="_blank" rel="noopener noreferrer">${data.attachmentName}</a>
+                            </div>
+                        </div>
+                    `;
+                }
             } else {
                 content.innerHTML = '<p>No consultation data found.</p>';
             }

@@ -118,18 +118,6 @@
 <body>
     
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
-    <script type="text/javascript">
-        emailjs.init('A-K1h5gtzE3pgK0H1')
-    </script>
-    <script src="dbscript.js"></script>
-    <script src="client-auth-guard.js"></script>
     <div class="header">
         <div class="logo-container">
             <img src="images/logo.png" alt="GPPB-TSO Logo" class="logo">
@@ -246,5 +234,13 @@
             </div>
         </div>
     </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="dbscript.js"></script>
+    <script src="client-auth-guard.js"></script>
 </body>
 </html>

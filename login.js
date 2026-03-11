@@ -91,6 +91,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const auth = firebase.auth();
         try {
             const userCredential = await auth.signInWithEmailAndPassword(email, password);
+            const sanitizedEmail = email.replace(/\./g, ",");
+            const snapshot = await db.ref("users/" + sanitizedEmail + "/role").once("value");
+            const role = snapshot.val();
+
+            if (role !== "admin") {
+                await auth.signOut();
+                message.style.color = "red";
+                message.textContent = "Access denied. Admin accounts only.";
+                return;
+            }
+
             sessionStorage.setItem("adminEmail", email);
             localStorage.setItem("appRole", "admin");
             message.style.color = "green";
@@ -99,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error("Auth error:", error);
             message.style.color = "red";
-            message.textContent = "INVALID EMAIL OR PASSWORD. Please try again."; ;
+            message.textContent = "INVALID EMAIL OR PASSWORD. Please try again.";
         }
     });
 

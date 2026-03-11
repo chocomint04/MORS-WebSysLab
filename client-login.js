@@ -49,7 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            await auth.createUserWithEmailAndPassword(email, password);
+            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+            const sanitizedEmail = email.replace(/\./g, ",");
+            await firebase.database().ref("users/" + sanitizedEmail).set({ role: "client" });
             localStorage.setItem("appRole", "client");
             message.style.color = "green";
             message.textContent = "Sign up successful.";

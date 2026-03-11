@@ -1,0 +1,89 @@
+<?php
+/*session start session.set()
+this is where we put the php
+i cant do much muna but its doable until the end of the day for php
+
+
+*/
+
+?>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <link rel="icon" type="image/x-icon" href="images/logo.png">
+    <link rel="stylesheet" href="login.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <script type="text/javascript"
+            src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+    </script>
+    <!-- Firebase v8 SDK (App, Auth, Database) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="client-auth.js" defer></script>
+    <script src="client-session-guard.js" defer></script>
+
+<!-- EmailJS -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script type="text/javascript">
+  (function(){
+      emailjs.init({
+          publicKey: "A-K1h5gtzE3pgK0H1",
+      });
+  })();
+</script>
+
+<!-- Your login logic -->
+<script src="login.js" defer></script>
+
+</head>
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <img src="images/logo.png" alt="GPPB-TSO Logo" class="logo">
+        </div>
+        <div class="system-title">
+            <div class="main-title">GPPB-TSO</div>
+            <div class="subtitle">Online Consultation Request System</div>
+        </div>
+        <a class="visit-website-btn" href="https://www.gppb.gov.ph/" target="_blank">Visit our Website!</a>
+    </div>
+
+    <div class="main-content">
+        <div class="card" style="max-width:400px;">
+            <h2 style="color:#3730F5; text-align: center;">Login as Admin</h2>
+            <form id="admin-login-form">
+                <div class="form-group">
+                    <label for="email">Company Email</label>
+                    <input type="email" id="email" placeholder="johndoe@example.com">
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="password">Company ID</label>
+                    <input type="password" id="password">
+                </div>
+                <br>
+
+                <p id="message"></p>
+                <div class="btns" style="display: flex; align-items: center; justify-content: space-between;">
+                    <a href="index.php" class="admin-btn" style="text-align:center; text-decoration:none; padding:10px 20px;">Back</a>
+                    <button type="button" class="admin-btn login-btn" id="button-login" style="color: #fff; text-align:center; text-decoration:none; padding:12px 20px;">Login</button>
+                </div>
+
+                <!-- OTP Input Section (Initially Hidden) -->
+                <div id="otpSection" style="display: none; margin-top: 20px;">
+                    <label for="otpInput">Enter OTP:</label>
+                    <input type="text" id="otpInput" placeholder="123456" class="form-group" style="margin-top: 5px;">
+                    <button type="button" id="verifyOtpBtn" class="admin-btn login-btn" style="margin-top: 10px; width: 100%;">Verify OTP</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

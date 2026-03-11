@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css" />
+    <title>Client Consultation Form</title>
+    <link rel="icon" type="image/x-icon" href="images/logo.png">
+    <style>
+        /* Responsive styles for the form */
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .form-group {
+            flex: 1 1 100%; /* Default to full width */
+        }
+        .time-slots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .time-slot {
+            flex-grow: 1;
+        }
+        @media (min-width: 768px) {
+            .form-group {
+                flex: 1 1 0; 
+            }
+        }
+        .center-captcha-row {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        #captcha-container {
+            max-width: 320px;
+            min-width: 220px;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-width: 500px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            margin-top: 10px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .cancel-btn, .verify-btn {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .cancel-btn {
+            background-color: #f44336; /* Red */
+        }
+
+        .refresh-captcha-btn {
+            background-color: #3730F5; /* Changed from #008CBA to match theme */
+        }
+
+        .refresh-captcha-btn:hover {
+            background-color: #2a23b7; /* Added hover state */
+        }
+
+        .captcha-display {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <script type="text/javascript">
+        emailjs.init('A-K1h5gtzE3pgK0H1')
+    </script>
+    <script src="dbscript.js"></script>
+    <script src="client-auth-guard.js"></script>
+    <div class="header">
+        <div class="logo-container">
+            <img src="images/logo.png" alt="GPPB-TSO Logo" class="logo">
+        </div>
+        <div class="system-title">
+            <div class="main-title">GPPB-TSO</div>
+            <div class="subtitle">Online Consultation Request System</div>
+        </div>
+        <a class="visit-website-btn" href="https://www.gppb.gov.ph/" target="_blank">Visit our Website!</a>
+    </div>
+
+    <div class="main-content">
+        <div class="card">
+            <form id="form" enctype="multipart/form-data">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="required">First Name</label>
+                        <input type="text" id="firstName" required placeholder="First Name">
+                    </div>
+                    <div class="form-group">
+                        <label class="required">Last Name</label>
+                        <input type="text" id="lastName" required placeholder="Last Name">
+                    </div>
+                    <div class="form-group">
+                        <label class="required">Job Position</label>
+                        <input type="text" id="jobPos" required placeholder="Position">
+                    </div>
+                </div> 
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="required">Email</label>
+                        <input type="email" id="email" required placeholder="johndoe@example.com">
+                    </div>
+                    <div class="form-group" style="flex: 0.5;">
+                        <label class="required">Phone Number</label>
+                        <input type="tel" id="phone" required placeholder="+63">
+                    </div>
+                    <div class="form-group" style="flex: 1.5;">
+                        <label>&nbsp;</label>
+                        <input type="tel" placeholder="91234567890">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Company or Organization Name</label>
+                        <input type="text" id="CName" placeholder="Company Name">
+                    </div>
+                    <div class="form-group">
+                        <label class="required">Consultation interest</label>
+                        <input type="text" id="consult" required>
+                    </div>
+                </div>
+
+                <label>Select an Appointment Date and Time</label>
+                <div class="form-row">
+                    <div class="form-group">
+                        <div class="date-picker-container">
+                            <input type="date" id="apt" min="" placeholder="dd/mm/yyyy">
+                            <div class="timezone">Philippines Time (UTC+8)</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="time-slots">
+                            <button type="button" class="time-slot">9:00 AM</button>
+                            <button type="button" class="time-slot">10:00 AM</button>
+                            <button type="button" class="time-slot">11:00 AM</button>
+                            <button type="button" class="time-slot">12:00 PM</button>
+                            <button type="button" class="time-slot">1:00 PM</button>
+                            <button type="button" class="time-slot">2:00 PM</button>
+                            <button type="button" class="time-slot">3:00 PM</button>
+                            <button type="button" class="time-slot">4:00 PM</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Attach Supporting Document (optional)</label>
+                    <input type="file" id="attachment" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+                </div>
+                
+                <div class="form-group">
+                    <label>Additional Information/Comments</label>
+                    <textarea></textarea>
+                </div>
+                <br>
+                <button type="submit" class="submit-btn" href="receipt.php">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Captcha Modal -->
+    <div id="captcha-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Complete Captcha Verification</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group" id="captcha-container">
+                    <label for="captchaInput">Enter the captcha shown below:</label>
+                    <div class="captcha-display">
+                        <span id="captcha-text"></span>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center; margin-top: 10px;">
+                        <input type="text" id="captchaInput" required placeholder="Enter Captcha" style="flex:1;">
+                        <button type="button" id="refreshCaptcha" class="refresh-captcha-btn">Refresh</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cancel-captcha" class="cancel-btn">Cancel</button>
+                <button type="button" id="verify-captcha" class="verify-btn">Verify & Submit</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

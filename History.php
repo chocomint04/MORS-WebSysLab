@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>History</title>
+  <link rel="icon" type="image/x-icon" href="images/logo.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="History.css">
+</head>
+
+<body> 
+    <!--PDF SRC CODE-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <script src="./authy.js"></script>
+    <script src="History.js"></script>
+   
+
+    <!--TESTING BAR GRAPH-->
+
+    <canvas id="statusChart" width="400" height="200" style="display:none;"></canvas>
+
+  <div class="flex h-screen">
+    <div class="sidebar hidden md:block">
+        <div class="mb-4">
+            <img src="images/logo.png"
+                 alt="Government Procurement Policy Board - Technical Support Office logo" width="150" height="100" />
+        </div>
+    <nav class="space-y-4">
+      <a href="inbox.php" class="flex items-center"><i class="fas fa-inbox"></i><span>Inbox</span></a>
+      <a href="History.php" class="flex items-center"><i class="fas fa-history"></i><span>History</span></a>
+      <a href="Calendar.php" class="flex items-center"><i class="fas fa-calendar-alt"></i><span>Calendar</span></a>
+      <a href="Systems.php" class="flex items-center active"><i class="fas fa-sliders-h"></i><span>Systems</span></a>
+    </nav>
+        <div class="bottom-section">
+            <div class="user-info">
+                <i class="fas fa-user-circle text-2xl"></i>
+                <span id="account-email">Loading...</span>
+
+            </div>
+            <a href="#" class="signout">Sign out</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+      <img src="images/bg.png" alt="Background image" class="background-image">
+
+      <div class="content">
+          <div class="header">
+              <div class="flex justify-between items-center">
+                  <h1><b>HISTORY</b></h1>
+              </div>
+              <div class="flex justify-between items-center mt-2">
+                  <input class="search-input" placeholder="Search History" type="text" onkeyup="searchTable()"/>
+              </div>
+          </div>
+
+          <div class="filters">
+              <div class="filter-buttons">
+                  <div class="left-buttons">
+                      <button class="btn">
+                          <i class="fas fa-check-square" onclick="toggleSelectAll(this)"></i>
+                      </button>
+                      <button class="btn" id="open">
+                          <i class="fas fa-trash-alt" id="open"></i>
+                      </button>
+                      <button class="btn">
+                          <i class="fas fa-sync-alt" onclick="refreshPage()"></i>
+                      </button>
+                      <button class="fstat" style="background-color: #00A651; color: white;" onclick="filterStatus('approved')" data-filter="approved">Approved</button>
+                      <button class="fstat" style="background-color: #E12926; color: white;" onclick="filterStatus('rejected')" data-filter="cancelled">Cancelled</button>
+                      <button class="fstat" style="background-color: #F5A623; color: white;" onclick="filterStatus('rescheduled')" data-filter="rescheduled">Rescheduled</button>
+                      <div class="relative export-dropdown">
+  <button class="fstat export-csv" onclick="toggleExportMenu()">Export</button>
+
+  <div id="exportMenu" class="dropdown-menu hidden">
+    <div class="dropdown-title">Export as:</div>
+    <button class="dropdown-option" onclick="exportContactFormDBAsCsv()">CSV</button>
+   <button class="dropdown-option" onclick="exportCsvAsPdfWithGraph()">PDF</button>
+
+  </div>
+</div>
+
+                  </div>
+                  <div class="right-buttons">
+                      <button id="sortArrow" onclick="toggleArrow(this)" class="btn">
+                          <i class="fas fa-arrow-up"></i>
+                      </button>
+                      <select id="sortCriteria" onchange="applySorting()">
+                          <option value="date">Date</option>
+                          <option value="name">Name</option>
+                      </select>
+                  </div>
+              </div>
+
+              <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Sender</th>
+                            <th>Subject</th>
+                            <th>Status</th>
+                            <th>Consultation Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        </tbody>
+                </table>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <div id="modal-container" class="modal-container">
+        <div class="modal">
+            <div class="modal-in">
+                <h1>Delete these items?</h1>
+                <p>These requests will be permanently deleted</p>
+                <div class="modal-btns">
+                    <button id="continue" style="background-color: #1d4ed8; color: #ffffff;">Continue</button>
+                    <button id="close" style="background-color: #e7e7e7;">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white shadow-lg flex justify-around items-center py-2 border-t z-20">
+      <a href="inbox.html" class="flex flex-col items-center text-gray-700 hover:text-blue-600">
+        <i class="fas fa-inbox text-lg"></i>
+        <span class="text-xs mt-1">Inbox</span>
+      </a>
+      <a href="History.html" class="flex flex-col items-center text-gray-700 hover:text-blue-600">
+        <i class="fas fa-history text-lg"></i>
+        <span class="text-xs mt-1">History</span>
+      </a>
+      <a href="Calendar.html" class="flex flex-col items-center text-gray-700 hover:text-blue-600">
+        <i class="fas fa-calendar-alt text-lg"></i>
+        <span class="text-xs mt-1">Calendar</span>
+      </a>
+      <a href="Systems.html" class="flex flex-col items-center text-gray-700 hover:text-blue-600">
+        <i class="fas fa-users-cog text-lg"></i>
+        <span class="text-xs mt-1">Systems</span>
+      </a>
+      <a href="#" class="flex flex-col items-center text-red-600 hover:text-red-800 signout">
+  <i class="fas fa-sign-out-alt text-lg"></i>
+  <span class="text-xs mt-1">Sign Out</span>
+</a>
+    </nav>
+  </div>
+<script src="signout.js"></script>
+</body>
+</html>

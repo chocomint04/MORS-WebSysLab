@@ -1,2 +1,2 @@
-# MORS-WebSysLab
-MORS - A consultation Management Request System for the GPPB-TSO
+# GPPB-MORS
+GPPB_MORS for Software Engineering Lab Project

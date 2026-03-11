@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inbox</title>
+    <link rel="icon" type="image/x-icon" href="images/logo.png">
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="inbox.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="./authy.js"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="Inbox.css">
+</head>
+<body>
+    
+    <div class="flex h-screen">
+        <div class="sidebar">
+            <div class="mb-4">
+                <img src="images/logo.png" 
+                     alt="Government Procurement Policy Board - Technical Support Office logo" width="150" height="100" />
+            </div>
+            <nav class="space-y-4">
+            <a href="inbox.php" class="flex items-center"><i class="fas fa-inbox"></i><span>Inbox</span></a>
+            <a href="History.php" class="flex items-center"><i class="fas fa-history"></i><span>History</span></a>
+            <a href="Calendar.php" class="flex items-center"><i class="fas fa-calendar-alt"></i><span>Calendar</span></a>
+            <a href="Systems.php" class="flex items-center active"><i class="fas fa-sliders-h"></i><span>Systems</span></a>
+            </nav>
+            <div class="bottom-section">
+                <div class="user-info">
+                    <i class="fas fa-user-circle text-2xl"></i>
+                    <span id="account-email">Loading...</span>
+
+                </div>
+                <a href="#" class="signout">Sign out</a>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <img src="images/bg.png" alt="Background image" class="background-image">
+            <div class="content">
+                <div class="header">
+                    <div class="flex justify-between items-center">
+                        <h1><b>INBOX</b></h1>
+                    </div>
+                    <div class="flex justify-between items-center mt-2">
+                        <input type="text" class="search-input" placeholder="Search Inbox" onkeyup="searchTable()"/>
+                    </div>
+                </div>
+                <div class="filters">
+                    <div class="filter-buttons">
+                        <div class="left-buttons">
+                            <button>
+                                <i class="fas fa-check-square" onclick="toggleSelectAll(this)"></i>
+                            </button>
+                            <button id="open">
+                                <i class="fas fa-trash-alt" id="open"></i> </button>
+                            <button>
+                                <i class="fas fa-sync-alt" onclick="refreshPage()"></i>
+                            </button>
+                        </div>
+                        <div class="right-buttons">
+                            <button id="sortArrow" onclick="toggleArrow(this)">
+                                <i class="fas fa-arrow-up"></i>
+                            </button>
+                            <select id="sortCriteria" onchange="applySorting()">
+                                <option value="date">Date</option>
+                                <option value="name">Name</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr class="inbox-row">
+                                    <th></th>
+                                    <th>Sender</th>
+                                    <th>Subject</th>
+                                    <th>Consultation Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inbox-table-body">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav md:hidden">
+      <a href="inbox.php">
+        <i class="fas fa-inbox"></i>
+        <span>Inbox</span>
+      </a>
+      <a href="History.php">
+        <i class="fas fa-history"></i>
+        <span>History</span>
+      </a>
+      <a href="Calendar.php">
+        <i class="fas fa-calendar-alt"></i>
+        <span>Calendar</span>
+      </a>
+      <a href="Systems.php">
+        <i class="fas fa-sliders-h"></i>
+        <span>Systems</span>
+      </a>
+      <a href="#" class="signout">
+        <i class="fas fa-sign-out-alt" style="color: #dc2626;"></i>
+        <span>Sign Out</span>
+      </a>
+    </div>
+  
+    <div id="modal-container" class="modal-container">
+        <div class="modal">
+            <div class="modal-in">
+                <h1>Delete these items?</h1>
+                <p>These requests will be permanently deleted</p>
+                <div class="modal-btns">
+                    <button id="continue" style="background-color: #1d4ed8; color: #ffffff;">Continue</button>
+                    <button id="close" style="background-color: #e7e7e7;">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="./signout.js"></script>
+</body>
+</html>

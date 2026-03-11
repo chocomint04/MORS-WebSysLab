@@ -1,0 +1,217 @@
+body {
+  background-color: #e5e7eb;
+}
+
+.sidebar {
+  width: 12rem;
+  background-color: #f3f4f6;
+  padding: 1rem;
+}
+
+.sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4b5563;
+  transition: color 0.3s;
+}
+
+.sidebar nav a:hover {
+  color: #1f2937;
+}
+
+.sidebar .bottom-section {
+  position: absolute;
+  bottom: 1rem;
+}
+
+.sidebar .bottom-section .user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sidebar .bottom-section a {
+  font-size: 0.875rem;
+  color: #6b7280;
+  transition: color 0.3s;
+}
+
+.sidebar .bottom-section a:hover {
+  color: #374151;
+}
+
+/* FullCalendar Customizations */
+.fc .fc-button-primary {    
+  background-color:#204cdc !important;     
+  border-color: #FFFFFF !important;
+  text-transform: capitalize;
+}
+
+.fc-toolbar-title {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.fc-day-selected {
+  background-color: #204cdc !important;
+  color: #fff !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.fc .fc-col-header-cell {
+  cursor: pointer;
+}
+
+.fc .fc-daygrid-day {
+  cursor: pointer;
+}
+
+/* --- Responsive Styles for Mobile --- */
+@media (max-width: 767px) {
+  
+  /* Adjust font size for the calendar on mobile for better fit */
+  .fc {
+    font-size: 13px;
+  }
+
+  /* Reduce the title size on the mobile calendar header */
+  .fc-toolbar-title {
+    font-size: 1.25rem; /* 20px */
+  }
+
+  /* Adjustments for the left panel on mobile */
+  #dayDisplay {
+    font-size: 2.5rem; /* smaller for better fit */
+    margin-bottom: 0.5rem;
+  }
+
+  #monthDisplay {
+    font-size: 1rem;
+    display: block;
+  }
+
+  #upcomingAppointments span {
+    font-size: 0.875rem;
+    word-break: break-word;
+  }
+
+  .relative.z-10 {
+    padding-bottom: 80px;
+  }
+
+  /* Make appointment list text smaller for better fit */
+  #upcomingAppointments span {
+    font-size: 0.875rem; /* text-sm */
+    word-break: break-word;
+  }
+  
+  /* Add padding to the bottom of the content area to avoid the mobile nav bar */
+  .relative.z-10 {
+    padding-bottom: 80px;
+  }
+}
+
+/* --- Responsive Styles for Tablets (768px to 1023px) --- */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .fc {
+    font-size: 15px;
+  }
+
+  .fc-toolbar-title {
+    font-size: 1.5rem;
+  }
+
+  #dayDisplay {
+    font-size: 4rem;
+  }
+
+  #monthDisplay {
+    font-size: 1.25rem;
+  }
+
+  #upcomingAppointments span {
+    font-size: 1rem;
+  }
+}
+
+/* --- Responsive Styles for Desktop (1024px and above) --- */
+@media (min-width: 1024px) {
+  .fc {
+    font-size: 16px;
+  }
+
+  .fc-toolbar-title {
+    font-size: 1.75rem;
+  }
+
+  #dayDisplay {
+    font-size: 5rem;
+  }
+
+  #monthDisplay {
+    font-size: 1.5rem;
+  }
+
+  #upcomingAppointments span {
+    font-size: 1rem;
+  }
+}
+
+/* Responsive bottom nav for mobile */
+@media (max-width: 768px) {
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border-top: 1px solid #d1d5db;
+    z-index: 100;
+    justify-content: space-around;
+    padding: 0;
+  }
+  .bottom-nav a {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #4b5563;
+    font-size: 1rem;
+    padding: 8px 0;
+    text-decoration: none;
+    transition: color 0.3s;
+    min-width: 0;
+    gap: 0.5rem; 
+  }
+  .bottom-nav a.active,
+  .bottom-nav a:hover {
+    color: #111827;
+    font-weight: bold;
+  }
+  .bottom-nav a.signout {
+    color: #e53935 !important; 
+  }
+  .bottom-nav a.signout:hover {
+    color: #c62828 !important;
+  }
+  .bottom-nav a i {
+    font-size: 1rem;      
+    margin-bottom: 2px;   
+    display: block;
+  }
+  .bottom-nav a span {
+    font-size: 0.8rem;
+    line-height: 1;
+    display: block;
+  }
+}
+#account-email {
+  font-size: 11.7px;
+  white-space: normal;
+  word-break: break-all;
+}

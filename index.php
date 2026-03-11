@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css" />
+    <title>GPPB-TSO Online Consultation Request System</title>
+    <link rel="icon" type="image/x-icon" href="images/logo.png">
+</head>
+<body>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script src="client-auth.js"></script>
+    <script src="client-session-guard.js"></script>
+
+    <!-- Add EmailJS SDK first -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <!-- Initialize EmailJS -->
+    <script type="text/javascript">
+        emailjs.init('A-K1h5gtzE3pgK0H1')
+    </script>
+    <script src="script.js"></script>
+    <div class="header">
+        <div class="logo-container">
+            <img src="images/logo.png" alt="GPPB-TSO Logo" class="logo">
+        </div>
+        <div class="system-title">
+            <div class="main-title">GPPB-TSO</div>
+            <div class="subtitle">Online Consultation Request System</div>
+        </div>
+        <a class="visit-website-btn" href="https://www.gppb.gov.ph/" target="_blank">Visit our Website!</a>
+    </div>
+
+    <div class="main-content" id="main-content">
+        <div class="card">
+            <div class="card-header">
+                <div class="greeting">GREETINGS FROM THE</div>
+                <div class="team-title">GPPB-TSO<br>Team!</div>
+                <div class="help-text">How can we help you today?</div>
+            </div>
+            <div class="action-buttons">
+                <a class="client-btn" id="client-btn" href="client-login.php">I'm a Client</a>
+                <a class="admin-btn" id="admin-btn" href="login.php">I'm an Admin</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

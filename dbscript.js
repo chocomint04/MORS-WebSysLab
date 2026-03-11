@@ -224,7 +224,7 @@ delete formData.attachment;
 const dbResponse = await contactFormDB.push(formData);
             // Store data in sessionStorage before redirecting
             sessionStorage.setItem('consultationData', JSON.stringify(formData));
-            window.location.href = './client-dashboard.php';
+            window.location.href = './receipt.php';
 
         } catch (error) {
             console.error('Detailed error information:', {

@@ -60,7 +60,7 @@
             <img src="images/emailjs_logo.png" alt="EmailJS Logo" class="system-logo logo"> 
             <span>Email Services</span>
           </a>
-          <a href="https://github.com/DH540/GPPB-MORS" class="system-tile">
+          <a href="https://github.com/chocomint04/MORS-WebSysLab" class="system-tile">
             <img src="images/github_PNG25.png" alt="Github Logo" class="system-logo logo"> 
             <span>Program</span>
           </a>

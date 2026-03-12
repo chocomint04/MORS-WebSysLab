@@ -219,7 +219,8 @@ try {
 } catch (uploadError) {
     console.error("Attachment upload failed - code:", uploadError.code);
     console.error("Attachment upload failed - message:", uploadError.message);
-    alert("Attachment upload failed: " + (uploadError.message || uploadError.code) + "Check the console for details.");
+    alert("Attachment upload failed: " + (uploadError.message || uploadError.code) + " Check the console for details.");
+    return; // Stop form submission if attachment upload fails
 }
 
 formData.attachmentURL = attachmentURL;
@@ -261,7 +262,7 @@ delete formData.attachment;
                 appointmentTime: document.querySelector('.time-slot.selected')?.textContent || '',
                 additionalInfo: this.querySelector('textarea').value,
                 attachment: document.getElementById("attachment").files[0] || null,
-                status: "Pending"
+                status: "pending"
             };
             console.log('Form data collected:', formData);
 

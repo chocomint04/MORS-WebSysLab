@@ -1,11 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
@@ -22,77 +18,63 @@
   <script src="Calendar.js"></script>
   <script src="authy.js"></script>
 </head>
-
 <body>
-  <div class="flex h-screen">
-    <div class="sidebar hidden md:block">
-        <div class="mb-4">
-            <img src="images/logo.png" 
-                 alt="Government Procurement Policy Board - Technical Support Office logo" width="150" height="100" />
-        </div>
+
+  <!-- Sidebar (desktop only) -->
+  <div class="sidebar hidden md:block">
+    <div class="mb-4">
+      <img src="images/logo.png" alt="GPPB-TSO logo" width="150" height="100" />
+    </div>
     <nav class="space-y-4">
       <a href="inbox.php" class="flex items-center"><i class="fas fa-inbox"></i><span>Inbox</span></a>
       <a href="History.php" class="flex items-center"><i class="fas fa-history"></i><span>History</span></a>
-      <a href="Calendar.php" class="flex items-center"><i class="fas fa-calendar-alt"></i><span>Calendar</span></a>
-      <a href="Systems.php" class="flex items-center active"><i class="fas fa-sliders-h"></i><span>Systems</span></a>
+      <a href="Calendar.php" class="flex items-center active"><i class="fas fa-calendar-alt"></i><span>Calendar</span></a>
+      <a href="Systems.php" class="flex items-center"><i class="fas fa-sliders-h"></i><span>Systems</span></a>
     </nav>
-        <div class="bottom-section">
-            <div class="user-info">
-                <i class="fas fa-user-circle text-2xl"></i>
-                <span id="account-email">Loading...</span>
-            </div>
-            <a href="#" class="signout">Sign out</a>
-        </div>
+    <div class="bottom-section">
+      <div class="user-info">
+        <i class="fas fa-user-circle text-2xl"></i>
+        <span id="account-email">Loading...</span>
+      </div>
+      <a href="#" class="signout">Sign out</a>
     </div>
-    <div class="flex-1 relative overflow-hidden">
-      <img src="images/bg.png" alt="Background" class="absolute inset-0 w-full h-full object-cover z-0">
+  </div>
 
-      <div class="relative z-10 bg-white bg-opacity-75 p-4 min-h-screen overflow-auto flex flex-col">
-
-
-        <div class="bg-blue-700 text-white p-4 rounded-t">
-          <h2 class="text-2xl font-bold">CALENDAR</h2>
+  <!-- Main content (offset right of sidebar on desktop) -->
+  <div class="main-content">
+    <div class="bg-image-wrapper">
+      <img src="images/bg.png" alt="Background" />
+    </div>
+    <div class="content-inner">
+      <div class="cal-header">
+        <h2>CALENDAR</h2>
+      </div>
+      <div class="cal-panels" id="calendar-panel-container">
+        <!-- Left panel -->
+        <div class="cal-left-panel">
+          <div id="dayDisplay" class="day-display"></div>
+          <div id="monthDisplay" class="month-display"></div>
+          <div class="divider"></div>
+          <h3 class="appt-label">Upcoming Appointments:</h3>
+          <div id="upcomingAppointments" class="appt-list"></div>
         </div>
-
-        <div class="flex flex-col md:flex-row bg-gray-100 bg-opacity-75 p-4 rounded-b gap-6 h-full overflow-auto" id="calendar-panel-container">
-          <div class="bg-white px-4 pt-6 pb-4 rounded shadow w-full md:w-1/3 flex flex-col items-center">
-            <div id="dayDisplay" class="text-5xl font-bold mb-3"></div>
-            <div id="monthDisplay" class="text-xl mb-4"></div>
-            <div class="border-b border-gray-300 w-full mb-4"></div>
-            <h3 class="font-semibold mb-2">Upcoming Appointments:</h3>
-            <div id="upcomingAppointments" class="space-y-2"></div>
-          </div>
-
-          <div class="bg-white p-4 rounded shadow w-full md:w-2/3">
-            <div id="calendar" class="w-full h-full min-h-[500px]"></div>
-          </div>
+        <!-- Calendar -->
+        <div class="cal-right-panel">
+          <div id="calendar"></div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- Bottom nav (mobile only) -->
   <div class="bottom-nav md:hidden">
-  <a href="inbox.php">
-    <i class="fas fa-inbox"></i>
-    <span>Inbox</span>
-  </a>
-  <a href="History.php">
-    <i class="fas fa-history"></i>
-    <span>History</span>
-  </a>
-  <a href="Calendar.php" class="active">
-    <i class="fas fa-calendar-alt"></i>
-    <span>Calendar</span>
-  </a>
-  <a href="Accounts.php">
-    <i class="fas fa-users-cog"></i>
-    <span>Accounts</span>
-  </a>
-  <a href="index.php" class="signout">
-    <i class="fas fa-sign-out-alt"></i>
-    <span>Sign Out</span>
-  </a>
-</div>
-<script src="signout.js"></script>
+    <a href="inbox.php"><i class="fas fa-inbox"></i><span>Inbox</span></a>
+    <a href="History.php"><i class="fas fa-history"></i><span>History</span></a>
+    <a href="Calendar.php" class="active"><i class="fas fa-calendar-alt"></i><span>Calendar</span></a>
+    <a href="Accounts.php"><i class="fas fa-users-cog"></i><span>Accounts</span></a>
+    <a href="index.php" class="signout"><i class="fas fa-sign-out-alt"></i><span>Sign Out</span></a>
+  </div>
+
+  <script src="signout.js"></script>
 </body>
 </html>

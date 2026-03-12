@@ -1,12 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display&display=swap');
 
+/* ─── Reset & base ──────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
 body { margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; background: #f0f2ff; }
 
+/* ─── Sidebar ───────────────────────────────────────────────── */
 .sidebar {
   width: 12rem;
   background: linear-gradient(180deg, #1e1a6e 0%, #3730F5 100%);
   padding: 1.5rem 1rem;
-  position: fixed; top: 0; left: 0; height: 100vh; z-index: 20; overflow-y: auto;
+  position: fixed; top: 0; left: 0; height: 100vh; z-index: 20;
+  overflow-y: auto;
   box-shadow: 3px 0 16px rgba(55,48,245,0.15);
 }
 .sidebar img { margin-bottom: 1.5rem; }
@@ -14,14 +18,120 @@ body { margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; background: #f
   display: flex; align-items: center; gap: 0.6rem;
   color: rgba(255,255,255,0.72); padding: 0.55rem 0.75rem; border-radius: 8px;
   font-size: 0.9rem; font-weight: 500; transition: all 0.2s; margin-bottom: 2px;
+  text-decoration: none;
 }
 .sidebar nav a:hover, .sidebar nav a.active { color: #fff; background: rgba(255,255,255,0.15); }
 .sidebar .bottom-section { position: absolute; bottom: 1.25rem; left: 1rem; right: 1rem; }
-.sidebar .bottom-section .user-info { display: flex; align-items: center; gap: 0.5rem; }
-.sidebar .bottom-section a { font-size: 0.8rem; color: rgba(255,255,255,0.6); transition: color 0.2s; }
+.sidebar .bottom-section .user-info { display: flex; align-items: center; gap: 0.5rem; color: rgba(255,255,255,0.8); }
+.sidebar .bottom-section a { font-size: 0.8rem; color: rgba(255,255,255,0.6); transition: color 0.2s; text-decoration: none; }
 .sidebar .bottom-section a:hover { color: rgba(255,255,255,0.9); }
+#account-email { font-size: 11px; white-space: normal; word-break: break-all; color: rgba(255,255,255,0.7); }
 
-/* FullCalendar polish */
+/* ─── Main content wrapper ──────────────────────────────────── */
+.main-content {
+  position: relative;
+  min-height: 100vh;
+  /* On mobile: full width. On desktop: offset past sidebar */
+}
+@media (min-width: 768px) {
+  .main-content { margin-left: 12rem; }
+}
+
+/* Background image */
+.bg-image-wrapper {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+@media (min-width: 768px) {
+  .bg-image-wrapper { left: 12rem; }
+}
+.bg-image-wrapper img {
+  width: 100%; height: 100%; object-fit: cover; opacity: 0.18;
+}
+
+/* Inner content sits above background */
+.content-inner {
+  position: relative;
+  z-index: 1;
+  padding: 1.25rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 80px; /* space for mobile bottom nav */
+}
+@media (min-width: 768px) {
+  .content-inner { padding-bottom: 1.25rem; }
+}
+
+/* ─── Calendar header bar ───────────────────────────────────── */
+.cal-header {
+  background: #3730F5;
+  color: #fff;
+  padding: 0.9rem 1.25rem;
+  border-radius: 10px 10px 0 0;
+  margin-bottom: 0;
+}
+.cal-header h2 { margin: 0; font-size: 1.4rem; font-weight: 700; letter-spacing: 0.5px; }
+
+/* ─── Panels container ──────────────────────────────────────── */
+.cal-panels {
+  background: rgba(241,243,255,0.85);
+  border-radius: 0 0 10px 10px;
+  padding: 1.25rem;
+  gap: 1.25rem;
+  display: flex;
+  flex-direction: column;   /* mobile: stack */
+  flex: 1;
+}
+@media (min-width: 768px) {
+  .cal-panels {
+    flex-direction: row;    /* desktop: side by side */
+    align-items: flex-start;
+  }
+}
+
+/* ─── Left info panel ───────────────────────────────────────── */
+.cal-left-panel {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(55,48,245,0.08);
+  padding: 1.5rem 1.25rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .cal-left-panel {
+    width: 260px;
+    min-width: 220px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 1.25rem;
+  }
+}
+
+.day-display { font-size: 4.5rem; font-weight: 700; line-height: 1; color: #0f172a; }
+.month-display { font-size: 1.1rem; font-weight: 600; color: #475569; margin-top: 0.25rem; letter-spacing: 1px; }
+.divider { width: 100%; height: 1px; background: #e2e8f0; margin: 1rem 0; }
+.appt-label { font-size: 0.95rem; font-weight: 700; color: #1e1a6e; margin-bottom: 0.6rem; text-align: center; }
+.appt-list { width: 100%; display: flex; flex-direction: column; gap: 0.5rem; }
+.appt-list p { color: #94a3b8; font-size: 0.875rem; text-align: center; margin: 0; }
+
+/* ─── Right calendar panel ──────────────────────────────────── */
+.cal-right-panel {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(55,48,245,0.08);
+  padding: 1.25rem;
+  flex: 1;
+  min-width: 0; /* prevents overflow */
+}
+#calendar { width: 100%; }
+
+/* ─── FullCalendar overrides ────────────────────────────────── */
 .fc .fc-button-primary {
   background: linear-gradient(135deg, #3730F5 0%, #2a23b7 100%) !important;
   border-color: transparent !important;
@@ -37,36 +147,34 @@ body { margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; background: #f
   transform: translateY(-1px) !important;
 }
 .fc .fc-button-primary:focus { box-shadow: 0 0 0 3px rgba(55,48,245,0.2) !important; }
-
 .fc-toolbar-title {
   font-family: 'DM Serif Display', serif !important;
-  font-size: 1.6rem !important; font-weight: 400 !important; color: #0f172a;
+  font-size: 1.4rem !important; font-weight: 400 !important; color: #0f172a;
 }
-
-.fc-day-selected {
-  background: rgba(55,48,245,0.12) !important;
-  border-radius: 0 !important;
-}
+.fc-day-selected { background: rgba(55,48,245,0.12) !important; }
 .fc .fc-col-header-cell { cursor: pointer; }
 .fc .fc-daygrid-day { cursor: pointer; }
 .fc .fc-daygrid-day:hover { background: rgba(55,48,245,0.04) !important; }
-
 .fc .fc-col-header-cell-cushion {
   font-family: 'DM Sans', sans-serif; font-weight: 600;
   color: #475569; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;
 }
-
-.fc .fc-daygrid-day-number {
-  font-family: 'DM Sans', sans-serif; color: #374151; font-size: 0.875rem;
-}
-
+.fc .fc-daygrid-day-number { font-family: 'DM Sans', sans-serif; color: #374151; font-size: 0.875rem; }
 .fc-event {
   border-radius: 5px !important; border: none !important;
   background: linear-gradient(135deg, #3730F5, #2a23b7) !important;
   box-shadow: 0 2px 6px rgba(55,48,245,0.3) !important;
 }
+/* Appointment count badge on day cells */
+.fc-day-appt-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #3730F5; color: #fff;
+  border-radius: 50%; width: 18px; height: 18px;
+  font-size: 0.68rem; font-weight: 700;
+  margin-left: 4px; vertical-align: middle;
+}
 
-/* Bottom nav */
+/* ─── Bottom nav (mobile) ───────────────────────────────────── */
 .bottom-nav {
   display: flex; position: fixed; bottom: 0; left: 0;
   width: 100%; background: #fff; border-top: 1px solid #e2e8f0;
@@ -81,28 +189,18 @@ body { margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; background: #f
 }
 .bottom-nav a.active, .bottom-nav a:hover { color: #3730F5; }
 .bottom-nav a.signout { color: #ef4444 !important; }
-.bottom-nav i { font-size: 1rem; display: block; margin-bottom: 2px; }
+.bottom-nav i { font-size: 1rem; display: block; }
 .bottom-nav a span { font-size: 0.72rem; line-height: 1; display: block; }
+@media (min-width: 768px) { .bottom-nav { display: none; } }
 
-#account-email { font-size: 11px; white-space: normal; word-break: break-all; color: rgba(255,255,255,0.7); }
-
+/* ─── Responsive font tweaks ────────────────────────────────── */
 @media (max-width: 767px) {
+  .day-display { font-size: 3rem; }
   .fc { font-size: 13px; }
-  .fc-toolbar-title { font-size: 1.1rem !important; }
-  #dayDisplay { font-size: 2.5rem; margin-bottom: 0.5rem; }
-  #monthDisplay { font-size: 1rem; display: block; }
-  #upcomingAppointments span { font-size: 0.875rem; word-break: break-word; }
-  .relative.z-10 { padding-bottom: 80px; }
+  .fc-toolbar-title { font-size: 1.05rem !important; }
 }
 @media (min-width: 768px) and (max-width: 1023px) {
-  .fc { font-size: 15px; }
-  .fc-toolbar-title { font-size: 1.35rem !important; }
-  #dayDisplay { font-size: 4rem; }
-  #monthDisplay { font-size: 1.25rem; }
+  .day-display { font-size: 3.5rem; }
+  .fc { font-size: 14px; }
+  .fc-toolbar-title { font-size: 1.2rem !important; }
 }
-@media (min-width: 1024px) {
-  .fc { font-size: 16px; }
-  #dayDisplay { font-size: 5rem; }
-  #monthDisplay { font-size: 1.5rem; }
-}
-@media (min-width: 768px) { .bottom-nav { display: none; } }
